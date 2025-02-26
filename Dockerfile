@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y tor
 # Configure Tor
 COPY torrc /etc/tor/torrc
 
-# Install Playwright and browsers
+# Install Playwright and Chromium
 RUN pip install playwright
-RUN playwright install firefox
+RUN playwright install chromium
 
 # Copy application files
 COPY . /app
