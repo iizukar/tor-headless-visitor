@@ -1,17 +1,21 @@
 FROM python:3.9-slim
 
-# Install Tor and dependencies
-RUN apt-get update && \
-    apt-get install -y tor curl && \
-    apt-get clean
+# Install dependencies
+RUN apt-get update && apt-get install -y tor
+
+# Configure Tor
+COPY torrc /etc/tor/torrc
+
+# Install Playwright and browsers
+RUN pip install playwright
+RUN playwright install firefox
+
+# Copy application files
+COPY . /app
+WORKDIR /app
 
 # Install Python dependencies
-COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Configure multiple Tor instances
-COPY torrc.template /etc/tor/torrc.template
-COPY browse.py .
-
-# Start script
-CMD ["python", "browse.py"]
+# Start Tor and the script
+CMD ["sh", "-c", "tor & python3 script.py"]
